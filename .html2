@@ -2,130 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Animation Page</title>
+  <title>Interactive Form Demo</title>
   <style>
-    /* Basic Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      margin: 40px;
     }
-
-    /* Animated Box */
-    #animatedBox {
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .error {
+      color: red;
+      display: none;
+    }
+    #thankYou {
+      display: none;
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+    #colorBox {
       width: 100px;
       height: 100px;
-      background-color: blue;
-      border-radius: 10px;
-      transition: transform 1s ease, background-color 1s ease;
-    }
-
-    /* Animation */
-    @keyframes moveBox {
-      0% {
-        transform: translateX(0);
-        background-color: blue;
-      }
-      50% {
-        transform: translateX(200px);
-        background-color: red;
-      }
-      100% {
-        transform: translateX(0);
-        background-color: blue;
-      }
-    }
-
-    /* Form styles */
-    #userForm {
-      margin-top: 30px;
-      text-align: center;
-    }
-
-    input[type="text"] {
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    #welcomeMessage {
+      background-color: skyblue;
       margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #333;
+      transition: background-color 0.3s;
     }
   </style>
 </head>
 <body>
 
-  <div>
-    <!-- Animated Box -->
-    <div id="animatedBox"></div>
-
-    <!-- Form for storing data in localStorage -->
-    <div id="userForm">
-      <input type="text" id="userName" placeholder="Enter your name" />
-      <button onclick="storeName()">Save Name</button>
+  <h2>Contact Form</h2>
+  <form id="contactForm">
+    <div class="form-group">
+      <label>Name:</label><br>
+      <input type="text" id="name" required>
+      <div class="error" id="nameError">Please enter your name.</div>
     </div>
+    <div class="form-group">
+      <label>Email:</label><br>
+      <input type="email" id="email" required>
+      <div class="error" id="emailError">Please enter a valid email.</div>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
 
-    <!-- Welcome Message -->
-    <div id="welcomeMessage"></div>
-  </div>
+  <div id="thankYou">Thank you for submitting the form!</div>
+
+  <h3>Hover over the box:</h3>
+  <div id="colorBox"></div>
 
   <script>
-    // Function to store name in localStorage
-    function storeName() {
-      const name = document.getElementById("userName").value;
-      if (name) {
-        localStorage.setItem("userName", name);
-        displayWelcomeMessage();
+    const form = document.getElementById('contactForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const nameError = document.getElementById('nameError');
+    const emailError = document.getElementById('emailError');
+    const thankYou = document.getElementById('thankYou');
+    const colorBox = document.getElementById('colorBox');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      let valid = true;
+      nameError.style.display = 'none';
+      emailError.style.display = 'none';
+
+      if (nameInput.value.trim() === '') {
+        nameError.style.display = 'block';
+        valid = false;
       }
-    }
 
-    // Function to display the welcome message from localStorage
-    function displayWelcomeMessage() {
-      const storedName = localStorage.getItem("userName");
-      const welcomeMessage = document.getElementById("welcomeMessage");
-      if (storedName) {
-        welcomeMessage.textContent = `Welcome, ${storedName}!`;
-      } else {
-        welcomeMessage.textContent = "Please enter your name.";
+      const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+      if (!emailInput.value.match(emailPattern)) {
+        emailError.style.display = 'block';
+        valid = false;
       }
-    }
 
-    // Function to trigger animation when clicking on the box
-    function triggerAnimation() {
-      const box = document.getElementById("animatedBox");
-      box.style.animation = "moveBox 3s infinite"; // Trigger the animation
-    }
+      if (valid) {
+        thankYou.style.display = 'block';
+        form.reset();
+      }
+    });
 
-    // Event listener to trigger animation on box click
-    document.getElementById("animatedBox").addEventListener("click", triggerAnimation);
+    colorBox.addEventListener('mouseenter', () => {
+      colorBox.style.backgroundColor = 'orange';
+    });
 
-    // Display welcome message when the page loads
-    window.onload = function() {
-      displayWelcomeMessage();
-    };
+    colorBox.addEventListener('mouseleave', () => {
+      colorBox.style.backgroundColor = 'skyblue';
+    });
   </script>
 
 </body>
